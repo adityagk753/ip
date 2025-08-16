@@ -29,9 +29,40 @@ public class Duke {
                 }
             } else {
                 // we create a new task (by default it is notDone)
-                Task newTask = new Task(userInput);
-                tasks.add(newTask);
-                System.out.println("added: " + newTask.getDescription()); // uses description
+
+                // [taskType] ...
+                String stringExcludingTaskType = userInput.split(" ", 2)[1];
+
+                // todo
+                if (userInput.matches("^todo.*$")) {
+                    // [description]
+                    String description = stringExcludingTaskType;
+                    ToDo newToDo = new ToDo(description);
+                    tasks.add(newToDo); 
+                }
+
+                // deadline
+                else if (userInput.matches("^deadline.*$")) {
+                    // [description] /by [endDate]
+                    String description = stringExcludingTaskType.split(" /by ")[0];
+                    String endDate = stringExcludingTaskType.split(" /by ")[1];
+                    Deadline deadline = new Deadline(description, endDate);
+                    tasks.add(deadline);
+                }
+
+                // event
+                else if (userInput.matches("^event.*$")) {
+                    // [description] /from [startDate] /to [endDate]
+                    String description = stringExcludingTaskType.split(" /from ")[0];
+                    String startDateAndEndDate = stringExcludingTaskType.split(" /from ")[1];
+                    String startDate = startDateAndEndDate.split(" /to ")[0];
+                    String endDate = startDateAndEndDate.split(" /to ")[1];
+                    Event event = new Event(description, startDate, endDate);
+                    tasks.add(event);
+                }
+                System.out.println("Got it. I've added this task: ");
+                System.out.println(tasks.get(tasks.size() - 1));
+                System.out.println("Now you have " + tasks.size() + " task(s) in the list.");
             }
             userInput = scanner.nextLine();
         }
