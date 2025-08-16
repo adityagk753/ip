@@ -8,11 +8,15 @@ mark 3
 unmark 1
 unmark 2
 unmark 3
+delete 1
+delete 2
 event project meeting /from should give error
 todo
 deadline return book should give error
 mark -1
 unmark -1
+delete -1
 mark 20
 unmark 20
+delete 20
 bye

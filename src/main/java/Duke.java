@@ -12,8 +12,22 @@ public class Duke {
 
     public static void handleCommand(String userInput, ArrayList<Task> tasks) throws CodyException {
 
-        if (userInput.matches("^mark.*$")) {
-            // mark ...
+        // delete [taskNumber]
+        if (userInput.matches("^delete.*$")) {
+            if (!userInput.matches("^delete\\s\\d+$")) {
+                throw new InvalidDeleteTaskException();
+            }
+            Integer taskNumber = Integer.parseInt(userInput.substring(7)) - 1;
+            if (taskNumber < 0 || taskNumber >= tasks.size()) {
+                throw new InvalidDeleteTaskException();
+            }
+            Task removedTask = tasks.remove((int) taskNumber);
+            System.out.println("Noted! I've removed this task:");
+            System.out.println(removedTask); // uses toString()
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        }
+        // mark [taskNumber]
+        else if (userInput.matches("^mark.*$")) {
             if (!userInput.matches("^mark\\s\\d+$")) {
                 throw new InvalidMarkTaskException();
             }
@@ -24,7 +38,7 @@ public class Duke {
             tasks.get(taskNumber).markAsDone();
             System.out.println("Nice! I've marked this task as done:");
             System.out.println(tasks.get(taskNumber)); // uses toString()
-        } 
+        }
         else if (userInput.matches("^unmark.*$")){
             // unmark ...
             if (!userInput.matches("^unmark\\s\\d+$")) {
