@@ -15,12 +15,10 @@ public class Duke {
         if (userInput.matches("^mark.*$")) {
             // mark ...
             if (!userInput.matches("^mark\\s\\d+$")) {
-                System.out.println("hahahahaah");
                 throw new InvalidMarkTaskException();
             }
             Integer taskNumber = Integer.parseInt(userInput.substring(5)) - 1;
             if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                System.err.println("hi");
                 throw new InvalidMarkTaskException();
             }
             tasks.get(taskNumber).markAsDone();
