@@ -1,18 +1,19 @@
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Event extends Task {
     
-    protected String startDate;
-    protected String endDate;
+    protected LocalDate startDate;
+    protected LocalDate endDate;
 
-    public Event(String description, String startDate, String endDate) {
+    public Event(String description, LocalDate startDate, LocalDate endDate) {
         super(description, false);
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-        public Event(String description, String startDate, String endDate, boolean isDone) {
+        public Event(String description, LocalDate startDate, LocalDate endDate, boolean isDone) {
         super(description, isDone);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -26,8 +27,8 @@ public class Event extends Task {
 
         if (matcher.find()) {
             String description = matcher.group(2);
-            String startDate = matcher.group(3);
-            String endDate = matcher.group(4);
+            LocalDate startDate = LocalDate.parse(matcher.group(3));
+            LocalDate endDate = LocalDate.parse(matcher.group(4));
             String isDoneString = matcher.group(1);
             if (isDoneString.equals(" ")) {
                 return new Event(description, startDate, endDate, false);

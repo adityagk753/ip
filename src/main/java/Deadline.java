@@ -1,16 +1,17 @@
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Deadline extends Task {
 
-    protected String endDate;
+    protected LocalDate endDate;
     
-    public Deadline(String description, String endDate) {
+    public Deadline(String description, LocalDate endDate) {
         super(description, false);
         this.endDate = endDate;
     }
 
-    public Deadline(String description, String endDate, boolean isDone) {
+    public Deadline(String description, LocalDate endDate, boolean isDone) {
         super(description, isDone);
         this.endDate = endDate;
     }
@@ -23,7 +24,7 @@ public class Deadline extends Task {
 
         if (matcher.find()) {
             String description = matcher.group(2);
-            String endDate = matcher.group(3);
+            LocalDate endDate = LocalDate.parse(matcher.group(3));
             String isDoneString = matcher.group(1);
             if (isDoneString.equals(" ")) {
                 return new Deadline(description, endDate, false);
