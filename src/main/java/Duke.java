@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Scanner;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.nio.file.Path;
 
 public class Duke {
@@ -76,11 +78,12 @@ public class Duke {
             // deadline
             else if (userInput.matches("^deadline.*$")) {
                 // [description] /by [endDate]
-                if (!userInput.matches("^.+\\s/by\\s.+$")) {
+                if (!stringExcludingTaskType.matches("^.+\\s/by\\s.+$")) {
                     throw new CodyException("Invalid deadline task arguments.");
                 }
-                String description = stringExcludingTaskType.split(" /by ")[0];
-                String endDate = stringExcludingTaskType.split(" /by ")[1];
+                String description = stringExcludingTaskType.split(" /by ")[0]; 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+                LocalDate endDate = LocalDate.parse(stringExcludingTaskType.split(" /by ")[1], formatter);
                 Deadline deadline = new Deadline(description, endDate);
                 tasks.add(deadline);
             }
@@ -88,13 +91,17 @@ public class Duke {
             // event
             else if (userInput.matches("^event.*$")) {
                 // [description] /from [startDate] /to [endDate]
-                if (!userInput.matches("^.+\\s/from\\s.+\\s/to\\s.+$")) {
+                if (!stringExcludingTaskType.matches("^.+\\s/from\\s.+\\s/to\\s.+$")) {
                     throw new CodyException("Invalid event task arguments.");
                 }
                 String description = stringExcludingTaskType.split(" /from ")[0];
                 String startDateAndEndDate = stringExcludingTaskType.split(" /from ")[1];
-                String startDate = startDateAndEndDate.split(" /to ")[0];
-                String endDate = startDateAndEndDate.split(" /to ")[1];
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+                LocalDate startDate = LocalDate.parse(startDateAndEndDate.split(" /to ")[0], formatter);
+                LocalDate endDate = LocalDate.parse(startDateAndEndDate.split(" /to ")[1], formatter);
+                if (endDate.isBefore(startDate)) {
+                    throw new CodyException("End date cannot be before start date.");
+                }
                 Event event = new Event(description, startDate, endDate);
                 tasks.add(event);
             }
@@ -148,7 +155,7 @@ public class Duke {
         while (!userInput.equals("bye")) {
             try {
                 handleCommand(userInput, tasks);
-            } catch (CodyException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
             userInput = scanner.nextLine();
