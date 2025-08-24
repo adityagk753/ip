@@ -2,9 +2,22 @@ public class Task {
     protected String description;
     protected boolean isDone;
 
-    public Task(String description) {
+    // overloaded constructor, when reading from file during initialisation of taskList
+    public Task(String description, boolean isDone) {
         this.description = description;
-        this.isDone = false;
+        this.isDone = isDone;
+    }
+
+    public static Task convertStringToTask(String string) throws CodyException {
+        if (string.startsWith("[T]")) {
+            return ToDo.convertStringToTask(string);
+        } else if (string.startsWith("[D]")) {
+            return Deadline.convertStringToTask(string);
+        } else if (string.startsWith("[E]")) {
+            return Event.convertStringToTask(string);
+        } else {
+            throw new CodyException("Unknown task type being read from file.");
+        }
     }
 
     public String getStatusIcon() {
