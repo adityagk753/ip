@@ -1,25 +1,29 @@
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class Duke {
 
     public static String getStringExcludingTaskType(String userInput) throws CodyException {
         if (userInput.split(" ").length == 1) {
-            throw new MissingDescriptionException();
+            throw new CodyException("The description is missing from the task.");
         }
         return userInput.split(" ", 2)[1];
     }
 
-    public static void handleCommand(String userInput, ArrayList<Task> tasks) throws CodyException {
+    public static void handleCommand(String userInput, TaskList tasks) throws CodyException {
 
         // delete [taskNumber]
         if (userInput.matches("^delete.*$")) {
             if (!userInput.matches("^delete\\s\\d+$")) {
-                throw new InvalidDeleteTaskException();
+                throw new CodyException("Invalid delete task arguments.");
             }
             Integer taskNumber = Integer.parseInt(userInput.substring(7)) - 1;
             if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new InvalidDeleteTaskException();
+                throw new CodyException("Invalid delete task arguments.");
             }
             Task removedTask = tasks.remove((int) taskNumber);
             System.out.println("Noted! I've removed this task:");
@@ -29,27 +33,26 @@ public class Duke {
         // mark [taskNumber]
         else if (userInput.matches("^mark.*$")) {
             if (!userInput.matches("^mark\\s\\d+$")) {
-                throw new InvalidMarkTaskException();
+                throw new CodyException("Invalid mark task arguments.");
             }
             Integer taskNumber = Integer.parseInt(userInput.substring(5)) - 1;
             if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new InvalidMarkTaskException();
+                throw new CodyException("Invalid mark task arguments.");
             }
-            tasks.get(taskNumber).markAsDone();
+            tasks.markTaskAsDone(taskNumber);
             System.out.println("Nice! I've marked this task as done:");
             System.out.println(tasks.get(taskNumber)); // uses toString()
-        }
-        else if (userInput.matches("^unmark.*$")){
+        } else if (userInput.matches("^unmark.*$")) {
             // unmark ...
             if (!userInput.matches("^unmark\\s\\d+$")) {
-                throw new InvalidUnmarkTaskException();
+                throw new CodyException("Invalid unmark task arguments.");
             }
             Integer taskNumber = Integer.parseInt(userInput.substring(7)) - 1;
             if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new InvalidUnmarkTaskException();
+                throw new CodyException("Invalid unmark task arguments.");
             }
             System.out.println("OK, I've marked this task as not done yet:");
-            tasks.get(taskNumber).markAsNotDone();
+            tasks.markTaskAsNotDone(taskNumber);
             System.out.println(tasks.get(taskNumber)); // uses toString()
         } else if (userInput.equals("list")) {
             // list all tasks
@@ -74,7 +77,7 @@ public class Duke {
             else if (userInput.matches("^deadline.*$")) {
                 // [description] /by [endDate]
                 if (!userInput.matches("^.+\\s/by\\s.+$")) {
-                    throw new InvalidDeadlineTaskException();
+                    throw new CodyException("Invalid deadline task arguments.");
                 }
                 String description = stringExcludingTaskType.split(" /by ")[0];
                 String endDate = stringExcludingTaskType.split(" /by ")[1];
@@ -86,7 +89,7 @@ public class Duke {
             else if (userInput.matches("^event.*$")) {
                 // [description] /from [startDate] /to [endDate]
                 if (!userInput.matches("^.+\\s/from\\s.+\\s/to\\s.+$")) {
-                    throw new InvalidEventTaskException();
+                    throw new CodyException("Invalid event task arguments.");
                 }
                 String description = stringExcludingTaskType.split(" /from ")[0];
                 String startDateAndEndDate = stringExcludingTaskType.split(" /from ")[1];
@@ -99,13 +102,46 @@ public class Duke {
             System.out.println(tasks.get(tasks.size() - 1));
             System.out.println("Now you have " + tasks.size() + " task(s) in the list.");
         } else {
-            throw new UnknownInputException();
+            throw new CodyException("I do not understand the input.");
         }
     }
 
     public static void main(String[] args) {
+        String directoryName = "data";
+        String fileName = "data/tasks.txt";
+        Path directoryPath = Paths.get(directoryName);
+        Path filePath = Paths.get(fileName);
+        if (Files.exists(directoryPath)) {
+            if (!Files.exists(filePath)) {
+                // dir exists but file does not
+                try {
+                    File tasksFile = new File(fileName);
+                    tasksFile.createNewFile();
+                } catch (IOException e) {
+                    System.out.println(e);
+                    return;
+                }
+            }
+        } else {
+            // create new directory AND file inside it
+            try {
+                Files.createDirectory(directoryPath);
+                File tasksFile = new File(fileName);
+                tasksFile.createNewFile();
+            } catch (IOException e) {
+                System.out.println(e);
+                return;
+            }
+        }
+
+        TaskList tasks;
+        try {
+            tasks = new TaskList(fileName);
+        } catch (CodyException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
         System.out.println("Hello, I'm Cody");
         System.out.println("What can I do for you?");
         String userInput = scanner.nextLine();
