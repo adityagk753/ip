@@ -1,32 +1,14 @@
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskList {
     ArrayList<Task> tasks = new ArrayList<>();
-    String pathToTasksFile;
+    Storage storage;
 
-    public TaskList(String pathToTasksFile) throws CodyException {
-        this.pathToTasksFile = pathToTasksFile;
-        Path filePath = Paths.get(pathToTasksFile);
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(filePath);
-            for (String line : lines) {
-                if (line.isEmpty()) { // if empty string (ie, the last line)
-                    continue;
-                }
-                Task task = Task.convertStringToTask(line);
-                tasks.add(task);
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-            return;
-        }
+    public TaskList(String directoryName, String filePathString) throws IOException, CodyException {
+        this.storage = new Storage(directoryName, filePathString);
+        this.tasks = storage.getExistingTasks();
+        return;
     }
 
     public Integer size() {
@@ -37,69 +19,24 @@ public class TaskList {
         return this.tasks.get(taskNumber);
     }
 
-    public void add(Task task) {
-        // add to file
-        try {
-            FileWriter fw = new FileWriter(pathToTasksFile, true);
-            fw.write(task.toString() + "\n");
-            fw.close();
-        } catch (IOException e) {
-            System.out.println(e);
-            return;
-        }
-        // add to local tasks arraylist
+    public void add(Task task) throws IOException {
+        storage.addToFile(task);
         this.tasks.add(task);
     }
 
-    public Task remove(int taskIndex) {
-        // delete from file
-        Path filePath = Paths.get(pathToTasksFile);
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(filePath);
-            lines.remove(taskIndex);
-            Files.write(filePath, lines);
-        } catch (IOException e) {
-            System.out.println(e);
-            return null;
-        }
-
-        // delete from local tasks arraylist
+    public Task remove(int taskIndex) throws IOException {
+        storage.removeFromFile(taskIndex);
         return this.tasks.remove(taskIndex);
     }
 
-    public void markTaskAsDone(int taskIndex) {
-        // mark task object as done
+    public void markTaskAsDone(int taskIndex) throws IOException {
         this.tasks.get(taskIndex).markAsDone();
-
-        // update file
-        Path filePath = Paths.get(pathToTasksFile);
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(filePath);
-            lines.set(taskIndex, this.tasks.get(taskIndex).toString());
-            Files.write(filePath, lines);
-        } catch (IOException e) {
-            System.out.println(e);
-            return;
-        }
+        storage.updateTask(taskIndex, this.tasks.get(taskIndex));
     }
 
-    public void markTaskAsNotDone(int taskIndex) {
-        // mark task object as done
+    public void markTaskAsNotDone(int taskIndex) throws IOException {
         this.tasks.get(taskIndex).markAsNotDone();
-
-        // update file
-        Path filePath = Paths.get(pathToTasksFile);
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(filePath);
-            lines.set(taskIndex, this.tasks.get(taskIndex).toString());
-            Files.write(filePath, lines);
-        } catch (IOException e) {
-            System.out.println(e);
-            return;
-        }
+        storage.updateTask(taskIndex, this.tasks.get(taskIndex));
     }
 
 }
