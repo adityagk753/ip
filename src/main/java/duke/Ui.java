@@ -1,3 +1,7 @@
+package duke;
+import duke.tasklist.TaskList;
+import duke.task.Task;
+
 public class Ui {
 
     public void displayWelcomeMessage() {

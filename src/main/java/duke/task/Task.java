@@ -1,3 +1,6 @@
+package duke.task;
+import duke.exception.CodyException;
+
 public class Task {
     protected String description;
     protected boolean isDone;

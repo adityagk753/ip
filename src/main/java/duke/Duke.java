@@ -1,5 +1,15 @@
+package duke;
+
 import java.io.IOException;
 import java.util.Scanner;
+import duke.parser.Parser;
+import duke.tasklist.TaskList;
+import duke.exception.CodyException;
+import duke.task.Deadline;
+import duke.task.Event;
+import duke.task.Task;
+import duke.task.ToDo;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
