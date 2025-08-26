@@ -1,6 +1,9 @@
+package duke.task;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import duke.exception.CodyException;
 
 public class Event extends Task {
     
