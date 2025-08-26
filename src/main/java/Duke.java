@@ -1,166 +1,129 @@
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Scanner;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.nio.file.Path;
 
 public class Duke {
 
-    public static String getStringExcludingTaskType(String userInput) throws CodyException {
-        if (userInput.split(" ").length == 1) {
-            throw new CodyException("The description is missing from the task.");
-        }
-        return userInput.split(" ", 2)[1];
+    TaskList tasks;
+    Ui ui;
+
+    public Duke() throws IOException, CodyException {
+        // tasklist will initialise storage
+        this.tasks = new TaskList("data", "data/tasks.txt");
+        this.ui = new Ui();
     }
 
-    public static void handleCommand(String userInput, TaskList tasks) throws CodyException {
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        this.ui.displayWelcomeMessage();
+        String userInput = scanner.nextLine();
+        while (!userInput.equals("bye")) {
+            try {
+                this.handleCommand(userInput);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            userInput = scanner.nextLine();
+        }
+        this.ui.displayGoodbyeMessage();
+        scanner.close();
+    }
 
+    public void handleCommand(String userInput) throws CodyException, IOException {
         // delete [taskNumber]
-        if (userInput.matches("^delete.*$")) {
-            if (!userInput.matches("^delete\\s\\d+$")) {
+        Parser parser = new Parser(userInput);
+        if (parser.startsWith("delete")) {
+            if (!parser.isValidDeleteCommand()) {
                 throw new CodyException("Invalid delete task arguments.");
             }
-            Integer taskNumber = Integer.parseInt(userInput.substring(7)) - 1;
-            if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new CodyException("Invalid delete task arguments.");
+            int taskIndex = parser.getTaskNumberFromValidDeleteCommand() - 1;
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw new CodyException("Index of task to be deleted is out of the valid range.");
             }
-            Task removedTask = tasks.remove((int) taskNumber);
-            System.out.println("Noted! I've removed this task:");
-            System.out.println(removedTask); // uses toString()
-            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            Task removedTask = tasks.remove(taskIndex);
+            ui.displaySuccessfulRemovedTaskMessage(removedTask, tasks.size());
         }
         // mark [taskNumber]
-        else if (userInput.matches("^mark.*$")) {
-            if (!userInput.matches("^mark\\s\\d+$")) {
+        else if (parser.startsWith("mark")) {
+            if (parser.isValidMarkCommand()) {
                 throw new CodyException("Invalid mark task arguments.");
             }
-            Integer taskNumber = Integer.parseInt(userInput.substring(5)) - 1;
-            if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new CodyException("Invalid mark task arguments.");
+            Integer taskIndex = parser.getTaskNumberFromValidMarkCommand() - 1;
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw new CodyException("Index of task to be marked as done is out of the valid range.");
             }
-            tasks.markTaskAsDone(taskNumber);
-            System.out.println("Nice! I've marked this task as done:");
-            System.out.println(tasks.get(taskNumber)); // uses toString()
-        } else if (userInput.matches("^unmark.*$")) {
+            tasks.markTaskAsDone(taskIndex);
+            ui.displaySuccessfulMarkTaskAsDoneMessage(tasks.get(taskIndex));
+        } else if (parser.startsWith("unmark")) {
             // unmark ...
-            if (!userInput.matches("^unmark\\s\\d+$")) {
+            if (parser.isValidUnmarkCommand()) {
                 throw new CodyException("Invalid unmark task arguments.");
             }
-            Integer taskNumber = Integer.parseInt(userInput.substring(7)) - 1;
-            if (taskNumber < 0 || taskNumber >= tasks.size()) {
-                throw new CodyException("Invalid unmark task arguments.");
+            Integer taskIndex = parser.getTaskNumberFromValidUnmarkCommand() - 1;
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw new CodyException("Index of task to be unmarked is out of the valid range.");
             }
-            System.out.println("OK, I've marked this task as not done yet:");
-            tasks.markTaskAsNotDone(taskNumber);
-            System.out.println(tasks.get(taskNumber)); // uses toString()
-        } else if (userInput.equals("list")) {
-            // list all tasks
-            for (int i = 1; i <= tasks.size(); i++) {
-                System.out.println(i + ". " + tasks.get(i - 1)); // uses toString()
-            }
-        } else if (userInput.matches("^(todo|deadline|event).*$")) {
-            // we create a new task (by default it is notDone)
-
-            // [taskType] ...
-            String stringExcludingTaskType = getStringExcludingTaskType(userInput);
-
+            tasks.markTaskAsNotDone(taskIndex);
+            ui.displaySuccessfulUnmarkTaskMessage(tasks.get(taskIndex));
+        } else if (parser.stringEquals("list")) {
+            // list
+            ui.listAllTasks(this.tasks);
+        } else if (parser.isValidAddTaskCommand()) {
             // todo
-            if (userInput.matches("^todo.*$")) {
+            if (parser.startsWith("todo")) {
                 // [description]
-                String description = stringExcludingTaskType;
+                if (!parser.isValidAddToDoCommand()) {
+                    throw new CodyException("Invalid todo task arguments.");
+                }
+                String description = parser.getDescriptionFromValidAddToDoCommand();
                 ToDo newToDo = new ToDo(description);
                 tasks.add(newToDo);
             }
 
             // deadline
-            else if (userInput.matches("^deadline.*$")) {
+            else if (parser.startsWith("deadline")) {
                 // [description] /by [endDate]
-                if (!stringExcludingTaskType.matches("^.+\\s/by\\s.+$")) {
+                if (!parser.isValidAddDeadlineCommand()) {
                     throw new CodyException("Invalid deadline task arguments.");
                 }
-                String description = stringExcludingTaskType.split(" /by ")[0]; 
+                String[] args = parser.getArgsFromValidAddDeadlineCommand();
+                String description = args[0];
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-                LocalDate endDate = LocalDate.parse(stringExcludingTaskType.split(" /by ")[1], formatter);
+                LocalDate endDate = LocalDate.parse(args[1], formatter);
                 Deadline deadline = new Deadline(description, endDate);
                 tasks.add(deadline);
             }
 
             // event
-            else if (userInput.matches("^event.*$")) {
+            else if (parser.startsWith("event")) {
                 // [description] /from [startDate] /to [endDate]
-                if (!stringExcludingTaskType.matches("^.+\\s/from\\s.+\\s/to\\s.+$")) {
+                if (!parser.isValidAddEventCommand()) {
                     throw new CodyException("Invalid event task arguments.");
                 }
-                String description = stringExcludingTaskType.split(" /from ")[0];
-                String startDateAndEndDate = stringExcludingTaskType.split(" /from ")[1];
+                String[] args = parser.getArgsFromValidAddEventCommand();
+                String description = args[0];
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-                LocalDate startDate = LocalDate.parse(startDateAndEndDate.split(" /to ")[0], formatter);
-                LocalDate endDate = LocalDate.parse(startDateAndEndDate.split(" /to ")[1], formatter);
+                LocalDate startDate = LocalDate.parse(args[1], formatter);
+                LocalDate endDate = LocalDate.parse(args[2], formatter);
                 if (endDate.isBefore(startDate)) {
                     throw new CodyException("End date cannot be before start date.");
                 }
                 Event event = new Event(description, startDate, endDate);
                 tasks.add(event);
             }
-            System.out.println("Got it. I've added this task: ");
-            System.out.println(tasks.get(tasks.size() - 1));
-            System.out.println("Now you have " + tasks.size() + " task(s) in the list.");
+            ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
         } else {
             throw new CodyException("I do not understand the input.");
         }
     }
 
     public static void main(String[] args) {
-        String directoryName = "data";
-        String fileName = "data/tasks.txt";
-        Path directoryPath = Paths.get(directoryName);
-        Path filePath = Paths.get(fileName);
-        if (Files.exists(directoryPath)) {
-            if (!Files.exists(filePath)) {
-                // dir exists but file does not
-                try {
-                    File tasksFile = new File(fileName);
-                    tasksFile.createNewFile();
-                } catch (IOException e) {
-                    System.out.println(e);
-                    return;
-                }
-            }
-        } else {
-            // create new directory AND file inside it
-            try {
-                Files.createDirectory(directoryPath);
-                File tasksFile = new File(fileName);
-                tasksFile.createNewFile();
-            } catch (IOException e) {
-                System.out.println(e);
-                return;
-            }
-        }
-
-        TaskList tasks;
         try {
-            tasks = new TaskList(fileName);
-        } catch (CodyException e) {
-            System.out.println(e.getMessage());
+            new Duke().run();
+        } catch (Exception e) {
+            System.out.println(e);
             return;
         }
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Hello, I'm Cody");
-        System.out.println("What can I do for you?");
-        String userInput = scanner.nextLine();
-        while (!userInput.equals("bye")) {
-            try {
-                handleCommand(userInput, tasks);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            userInput = scanner.nextLine();
-        }
-        System.out.println("Bye. Hope to see you again soon!");
-        scanner.close();
     }
 }
