@@ -1,6 +1,7 @@
 package duke;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import duke.parser.Parser;
 import duke.tasklist.TaskList;
@@ -123,6 +124,13 @@ public class Duke {
                 tasks.add(event);
             }
             ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
+        } else if (parser.startsWith("find")) {
+            if (!parser.isValidFindCommand()) {
+                throw new CodyException("Invalid find command arguments.");
+            } 
+            String searchString = parser.getSearchStringFromValidFindCommand();
+            ArrayList<Task> tasksMatchingDescription = tasks.getTasksMatchingDescription(searchString);
+            ui.listTasks(tasksMatchingDescription);
         } else {
             throw new CodyException("I do not understand the input.");
         }

@@ -43,4 +43,14 @@ public class TaskList {
         storage.updateTask(taskIndex, this.tasks.get(taskIndex));
     }
 
+    public ArrayList<Task> getTasksMatchingDescription(String searchString) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task: this.tasks) {
+            if (task.getDescription().contains(searchString)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
+
 }
