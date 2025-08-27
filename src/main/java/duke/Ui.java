@@ -1,4 +1,5 @@
 package duke;
+
 import duke.tasklist.TaskList;
 import duke.task.Task;
 
@@ -36,9 +37,9 @@ public class Ui {
     }
 
     public void displaySuccessfulAddTaskMessage(Integer numOfTasks, Task task) {
-            System.out.println("Got it. I've added this task: ");
-            System.out.println(task);
-            System.out.println("Now you have " + numOfTasks + " task(s) in the list.");
+        System.out.println("Got it. I've added this task: ");
+        System.out.println(task);
+        System.out.println("Now you have " + numOfTasks + " task(s) in the list.");
     }
 
 }

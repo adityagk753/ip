@@ -1,4 +1,5 @@
 package duke.task;
+
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,7 +9,7 @@ import duke.exception.CodyException;
 public class Deadline extends Task {
 
     protected LocalDate endDate;
-    
+
     public Deadline(String description, LocalDate endDate) {
         super(description, false);
         this.endDate = endDate;
@@ -31,7 +32,7 @@ public class Deadline extends Task {
             String isDoneString = matcher.group(1);
             if (isDoneString.equals(" ")) {
                 return new Deadline(description, endDate, false);
-            } else if (isDoneString.equals("X") ) {
+            } else if (isDoneString.equals("X")) {
                 return new Deadline(description, endDate, true);
             } else {
                 throw new CodyException("Unknown Deadline status symbol.");

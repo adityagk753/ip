@@ -1,4 +1,5 @@
 package duke.task;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,7 @@ public class ToDo extends Task {
     }
 
     public static ToDo convertStringToTask(String string) throws CodyException {
-        String regex = "\\[T\\]\\[(.)] (.+)"; //(.) and (.+) represents regex groups
+        String regex = "\\[T\\]\\[(.)] (.+)"; // (.) and (.+) represents regex groups
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string);
 
@@ -24,7 +25,7 @@ public class ToDo extends Task {
             String isDoneString = matcher.group(1);
             if (isDoneString.equals(" ")) {
                 return new ToDo(description, false);
-            } else if (isDoneString.equals("X") ) {
+            } else if (isDoneString.equals("X")) {
                 return new ToDo(description, true);
             } else {
                 throw new CodyException("Unknown ToDo status symbol.");
