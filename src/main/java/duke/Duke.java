@@ -13,17 +13,36 @@ import duke.task.ToDo;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents the Duke chatbot application.
+ * Duke manages a task list that supports adding, deleting, marking,
+ * unmarking, and listing tasks. Tasks are persisted in storage.
+ */
 public class Duke {
 
+    /** The list of tasks being managed by Duke. */
     TaskList tasks;
+
+    /** Handles all interactions with the user. */
     Ui ui;
 
+    /**
+     * Constructs a Duke chatbot instance.
+     * Initializes the task list and storage, and prepares the UI.
+     *
+     * @throws IOException if there is an issue with accessing or creating the storage file
+     * @throws CodyException if there is an error while initializing tasks from storage
+     */
     public Duke() throws IOException, CodyException {
-        // tasklist will initialise storage
         this.tasks = new TaskList("data", "data/tasks.txt");
         this.ui = new Ui();
     }
 
+    /**
+     * Runs the chatbot loop.
+     * Continuously reads user input, processes commands, and prints responses
+     * until the user enters "bye".
+     */
     public void run() {
         Scanner scanner = new Scanner(System.in);
         this.ui.displayWelcomeMessage();
@@ -40,9 +59,17 @@ public class Duke {
         scanner.close();
     }
 
+    /**
+     * Handles a single user command by parsing and executing it.
+     *
+     * @param userInput the full command entered by the user
+     * @throws CodyException if the input is invalid or command arguments are incorrect
+     * @throws IOException if there is an issue updating storage
+     */
     public void handleCommand(String userInput) throws CodyException, IOException {
-        // delete [taskNumber]
         Parser parser = new Parser(userInput);
+
+        // delete [taskNumber]
         if (parser.startsWith("delete")) {
             if (!parser.isValidDeleteCommand()) {
                 throw new CodyException("Invalid delete task arguments.");
@@ -54,35 +81,43 @@ public class Duke {
             Task removedTask = tasks.remove(taskIndex);
             ui.displaySuccessfulRemovedTaskMessage(removedTask, tasks.size());
         }
+
         // mark [taskNumber]
         else if (parser.startsWith("mark")) {
-            if (parser.isValidMarkCommand()) {
+            if (!parser.isValidMarkCommand()) {
                 throw new CodyException("Invalid mark task arguments.");
             }
-            Integer taskIndex = parser.getTaskNumberFromValidMarkCommand() - 1;
+            int taskIndex = parser.getTaskNumberFromValidMarkCommand() - 1;
             if (taskIndex < 0 || taskIndex >= tasks.size()) {
                 throw new CodyException("Index of task to be marked as done is out of the valid range.");
             }
             tasks.markTaskAsDone(taskIndex);
             ui.displaySuccessfulMarkTaskAsDoneMessage(tasks.get(taskIndex));
-        } else if (parser.startsWith("unmark")) {
-            // unmark ...
-            if (parser.isValidUnmarkCommand()) {
+        }
+
+        // unmark [taskNumber]
+        else if (parser.startsWith("unmark")) {
+            if (!parser.isValidUnmarkCommand()) {
                 throw new CodyException("Invalid unmark task arguments.");
             }
-            Integer taskIndex = parser.getTaskNumberFromValidUnmarkCommand() - 1;
+            int taskIndex = parser.getTaskNumberFromValidUnmarkCommand() - 1;
             if (taskIndex < 0 || taskIndex >= tasks.size()) {
                 throw new CodyException("Index of task to be unmarked is out of the valid range.");
             }
             tasks.markTaskAsNotDone(taskIndex);
             ui.displaySuccessfulUnmarkTaskMessage(tasks.get(taskIndex));
-        } else if (parser.stringEquals("list")) {
-            // list
+        }
+
+        // list
+        else if (parser.stringEquals("list")) {
             ui.listAllTasks(this.tasks);
-        } else if (parser.isValidAddTaskCommand()) {
-            // todo
+        }
+
+        // add new tasks
+        else if (parser.isValidAddTaskCommand()) {
+
+            // todo [description]
             if (parser.startsWith("todo")) {
-                // [description]
                 if (!parser.isValidAddToDoCommand()) {
                     throw new CodyException("Invalid todo task arguments.");
                 }
@@ -91,9 +126,8 @@ public class Duke {
                 tasks.add(newToDo);
             }
 
-            // deadline
+            // deadline [description] /by [endDate]
             else if (parser.startsWith("deadline")) {
-                // [description] /by [endDate]
                 if (!parser.isValidAddDeadlineCommand()) {
                     throw new CodyException("Invalid deadline task arguments.");
                 }
@@ -105,9 +139,8 @@ public class Duke {
                 tasks.add(deadline);
             }
 
-            // event
+            // event [description] /from [startDate] /to [endDate]
             else if (parser.startsWith("event")) {
-                // [description] /from [startDate] /to [endDate]
                 if (!parser.isValidAddEventCommand()) {
                     throw new CodyException("Invalid event task arguments.");
                 }
@@ -122,18 +155,27 @@ public class Duke {
                 Event event = new Event(description, startDate, endDate);
                 tasks.add(event);
             }
+
             ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
-        } else {
+        }
+
+        // invalid command
+        else {
             throw new CodyException("I do not understand the input.");
         }
     }
 
+    /**
+     * The main entry point of the program.
+     * Starts Duke and runs its main loop.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         try {
             new Duke().run();
         } catch (Exception e) {
-            System.out.println(e);
-            return;
+            System.out.println(e.getMessage());
         }
     }
 }
