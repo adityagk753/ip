@@ -1,6 +1,9 @@
 package duke;
 
 import duke.tasklist.TaskList;
+
+import java.util.ArrayList;
+
 import duke.task.Task;
 
 /**
@@ -80,4 +83,12 @@ public class Ui {
         System.out.println(task);
         System.out.println("Now you have " + numOfTasks + " task(s) in the list.");
     }
+
+    public void listTasks(ArrayList<Task> tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 1; i <= tasks.size(); i++) {
+            System.out.println(i + ". " + tasks.get(i - 1)); // uses toString()
+        }
+    }
+
 }

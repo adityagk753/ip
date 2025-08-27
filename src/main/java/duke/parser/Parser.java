@@ -181,4 +181,18 @@ public class Parser {
         }
     }
 
+    public boolean isValidFindCommand() {
+        return this.userInput.matches("^find .+$");
+    }
+
+    public String getSearchStringFromValidFindCommand() throws CodyException {
+        String regex = "^find (.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.userInput);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            throw new CodyException("Invalid find command");
+        }
+    }
 }
