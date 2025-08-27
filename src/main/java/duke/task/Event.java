@@ -1,4 +1,5 @@
 package duke.task;
+
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,7 +7,7 @@ import java.util.regex.Pattern;
 import duke.exception.CodyException;
 
 public class Event extends Task {
-    
+
     protected LocalDate startDate;
     protected LocalDate endDate;
 
@@ -16,11 +17,11 @@ public class Event extends Task {
         this.endDate = endDate;
     }
 
-        public Event(String description, LocalDate startDate, LocalDate endDate, boolean isDone) {
+    public Event(String description, LocalDate startDate, LocalDate endDate, boolean isDone) {
         super(description, isDone);
         this.startDate = startDate;
         this.endDate = endDate;
-    }    
+    }
 
     public static Event convertStringToTask(String string) throws CodyException {
         // [E][ ] project meeting (from: Mon 2pm to: 4pm)
@@ -35,7 +36,7 @@ public class Event extends Task {
             String isDoneString = matcher.group(1);
             if (isDoneString.equals(" ")) {
                 return new Event(description, startDate, endDate, false);
-            } else if (isDoneString.equals("X") ) {
+            } else if (isDoneString.equals("X")) {
                 return new Event(description, startDate, endDate, true);
             } else {
                 throw new CodyException("Unknown Event status symbol.");

@@ -1,11 +1,13 @@
 package duke.task;
+
 import duke.exception.CodyException;
 
 public class Task {
     protected String description;
     protected boolean isDone;
 
-    // overloaded constructor, when reading from file during initialisation of taskList
+    // overloaded constructor, when reading from file during
+    // initialisation of taskList
     public Task(String description, boolean isDone) {
         this.description = description;
         this.isDone = isDone;
@@ -41,6 +43,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() +"] " + this.getDescription();
+        return "[" + this.getStatusIcon() + "] " + this.getDescription();
     }
 }
