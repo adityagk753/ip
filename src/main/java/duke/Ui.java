@@ -15,11 +15,10 @@ import duke.task.Task;
 public class Ui {
 
     /**
-     * Prints the welcome message when the program starts.
+     * Returns the welcome message when the program starts.
      */
-    public void displayWelcomeMessage() {
-        System.out.println("Hello, I'm Cody");
-        System.out.println("What can I do for you?");
+    public String getWelcomeMessage() {
+        return "Hello, I'm Cody\nWhat can I do for you?";
     }
 
     /**
@@ -30,65 +29,67 @@ public class Ui {
     }
 
     /**
-     * Prints a message indicating a task has been removed from the list.
+     * Returns a message indicating a task has been removed from the list.
      *
      * @param removedTask the task that was removed
      * @param taskListSize the number of tasks remaining in the list
      */
-    public void displaySuccessfulRemovedTaskMessage(Task removedTask, Integer taskListSize) {
-        System.out.println("Noted! I've removed this task:");
-        System.out.println(removedTask); // uses toString()
-        System.out.println("Now you have " + taskListSize + " tasks in the list.");
+    public String displaySuccessfulRemovedTaskMessage(Task removedTask, Integer taskListSize) {
+        return String.format("Noted! I've removed this task:\n%s\nNow you have %d tasks in the list.", removedTask, taskListSize);
     }
 
     /**
-     * Prints a message indicating a task has been marked as done.
+     * Returns a message indicating a task has been marked as done.
      *
      * @param task the task that was marked as done
      */
-    public void displaySuccessfulMarkTaskAsDoneMessage(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(task); // uses toString()
+    public String displaySuccessfulMarkTaskAsDoneMessage(Task task) {
+        return String.format("Nice! I've marked this task as done:\n%s", task);
     }
 
     /**
-     * Prints a message indicating a task has been marked as not done.
+     * Returns a message indicating a task has been marked as not done.
      *
      * @param task the task that was marked as not done
      */
-    public void displaySuccessfulUnmarkTaskMessage(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println(task); // uses toString()
+    public String displaySuccessfulUnmarkTaskMessage(Task task) {
+        return String.format("OK, I've marked this task as not done yet:\n%s", task);
     }
 
     /**
-     * Prints all tasks in the task list with their corresponding indices.
+     * Returns a string containing all tasks in the task list with their corresponding indices.
      *
      * @param tasks the list of tasks to be printed
      */
-    public void listAllTasks(TaskList tasks) {
+    public String listAllTasks(TaskList tasks) {
+        String result = "";
         for (int i = 1; i <= tasks.size(); i++) {
-            System.out.println(i + ". " + tasks.get(i - 1)); // uses toString()
+            result += i + ". " + tasks.get(i - 1) + "\n"; // uses toString()
         }
+        return result;
     }
 
     /**
-     * Prints a message indicating a task has been successfully added.
+     * Returns a message indicating a task has been successfully added.
      *
      * @param numOfTasks the total number of tasks in the list after addition
-     * @param task the task that was added
+     * @param task       the task that was added
      */
-    public void displaySuccessfulAddTaskMessage(Integer numOfTasks, Task task) {
-        System.out.println("Got it. I've added this task: ");
-        System.out.println(task);
-        System.out.println("Now you have " + numOfTasks + " task(s) in the list.");
+    public String displaySuccessfulAddTaskMessage(Integer numOfTasks, Task task) {
+        return String.format("Got it. I've added this task: \n%s\nNow you have %d tasks(s) in the list", task, numOfTasks);
     }
 
-    public void listTasks(ArrayList<Task> tasks) {
-        System.out.println("Here are the matching tasks in your list:");
+    /**
+     * Converts input ArrayList of tasks to a string representation. 
+     * @param tasks
+     * @return string representation of ArrayList of tasks
+     */
+    public String listTasks(ArrayList<Task> tasks) {
+        String result = "Here are the matching tasks in your list:";
         for (int i = 1; i <= tasks.size(); i++) {
-            System.out.println(i + ". " + tasks.get(i - 1)); // uses toString()
+            result += i + ". " + tasks.get(i - 1) + "\n"; // uses toString()
         }
+        return result;
     }
 
 }
