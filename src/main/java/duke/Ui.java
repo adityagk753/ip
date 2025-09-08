@@ -85,7 +85,7 @@ public class Ui {
      * @return string representation of ArrayList of tasks
      */
     public String listTasks(ArrayList<Task> tasks) {
-        String result = "Here are the matching tasks in your list:";
+        String result = "Here are the matching tasks in your list:\n";
         for (int i = 1; i <= tasks.size(); i++) {
             result += i + ". " + tasks.get(i - 1) + "\n"; // uses toString()
         }
