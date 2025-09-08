@@ -3,6 +3,7 @@ package duke;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import duke.exception.CodyException;
@@ -158,6 +159,8 @@ public class Duke {
         } catch (CodyException e) {
             return e.getMessage();
         } catch (IOException e) {
+            return e.getMessage();
+        } catch (DateTimeParseException e) {
             return e.getMessage();
         }
     }

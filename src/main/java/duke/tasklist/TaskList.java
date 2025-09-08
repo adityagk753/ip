@@ -70,6 +70,7 @@ public class TaskList {
      * @throws IOException if an error occurs while updating storage
      */
     public Task remove(int taskIndex) throws IOException {
+        assert taskIndex >= 0 && taskIndex < this.tasks.size() : "taskIndex is out of range";
         storage.removeFromFile(taskIndex);
         return this.tasks.remove(taskIndex);
     }
@@ -81,6 +82,7 @@ public class TaskList {
      * @throws IOException if an error occurs while updating storage
      */
     public void markTaskAsDone(int taskIndex) throws IOException {
+        assert taskIndex >= 0 && taskIndex < this.tasks.size() : "taskIndex is out of range";
         this.tasks.get(taskIndex).markAsDone();
         storage.updateTask(taskIndex, this.tasks.get(taskIndex));
     }
@@ -92,6 +94,7 @@ public class TaskList {
      * @throws IOException if an error occurs while updating storage
      */
     public void markTaskAsNotDone(int taskIndex) throws IOException {
+        assert taskIndex >= 0 && taskIndex < this.tasks.size() : "taskIndex is out of range";
         this.tasks.get(taskIndex).markAsNotDone();
         storage.updateTask(taskIndex, this.tasks.get(taskIndex));
     }
