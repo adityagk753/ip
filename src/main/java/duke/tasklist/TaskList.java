@@ -60,7 +60,11 @@ public class TaskList {
      * @param task the task to be added
      * @throws IOException if an error occurs while writing to storage
      */
-    public void add(Task task) throws IOException {
+    public void add(Task task) throws IOException, CodyException {
+        // check for duplicates before adding
+        if (this.tasks.contains(task)) {
+            throw new CodyException("This task already exists!");
+        }
         storage.addToFile(task);
         this.tasks.add(task);
     }
