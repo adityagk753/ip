@@ -56,7 +56,8 @@ public class Parser {
      * @return the task number from the delete command.
      */
     public int getTaskNumberFromValidDeleteCommand() {
-        return Integer.parseInt(this.userInput.substring(7));
+        int LENGTH_OF_STRING_DELETE = 6; 
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_DELETE + 1));
     }
 
     /**
@@ -75,7 +76,8 @@ public class Parser {
      * @return the task number from the mark command.
      */
     public int getTaskNumberFromValidMarkCommand() {
-        return Integer.parseInt(this.userInput.substring(5));
+        int LENGTH_OF_STRING_MARK = 4;
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_MARK + 1));
     }
 
     /**
@@ -94,7 +96,8 @@ public class Parser {
      * @return the task number from the unmark command.
      */
     public int getTaskNumberFromValidUnmarkCommand() {
-        return Integer.parseInt(this.userInput.substring(7));
+        int LENGTH_OF_STRING_UNMARK = 6;
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_UNMARK + 1));
     }
 
     /**
