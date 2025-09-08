@@ -98,4 +98,18 @@ public class Task {
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.getDescription();
     }
+
+    /**
+     * Two tasks are considered equal if their string representations are the same.
+     * @param other any object
+     * @return true if the object is an instance of Task, and has the same string representation as this task.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Task)) {
+            return false;
+        }
+        Task otherTask = (Task) other;
+        return this.toString().equals(otherTask.toString());
+    }
 }
