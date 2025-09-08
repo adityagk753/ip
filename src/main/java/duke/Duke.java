@@ -96,6 +96,8 @@ public class Duke {
             }
         } catch (Exception e) {
             return e.getMessage();
+        } catch (DateTimeParseException e) {
+            return e.getMessage();
         }
     }
 
