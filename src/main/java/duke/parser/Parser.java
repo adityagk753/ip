@@ -46,6 +46,7 @@ public class Parser {
      * @return whether user input is a valid delete command.
      */
     public boolean isValidDeleteCommand() {
+        assert this.userInput.startsWith("delete") : "userInput should start with delete";
         return this.userInput.matches("^delete \\d+$");
     }
 
@@ -55,7 +56,8 @@ public class Parser {
      * @return the task number from the delete command.
      */
     public int getTaskNumberFromValidDeleteCommand() {
-        return Integer.parseInt(this.userInput.substring(7));
+        int LENGTH_OF_STRING_DELETE = 6; 
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_DELETE + 1));
     }
 
     /**
@@ -64,6 +66,7 @@ public class Parser {
      * @return whether user input is a valid mark command.
      */
     public boolean isValidMarkCommand() {
+        assert this.userInput.startsWith("mark") : "userInput should start with mark";
         return this.userInput.matches("^mark \\d+$");
     }
 
@@ -73,7 +76,8 @@ public class Parser {
      * @return the task number from the mark command.
      */
     public int getTaskNumberFromValidMarkCommand() {
-        return Integer.parseInt(this.userInput.substring(5));
+        int LENGTH_OF_STRING_MARK = 4;
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_MARK + 1));
     }
 
     /**
@@ -82,6 +86,7 @@ public class Parser {
      * @return whether user input is a valid unmark command.
      */
     public boolean isValidUnmarkCommand() {
+        assert this.userInput.startsWith("unmark") : "userInput should start with unmark";
         return this.userInput.matches("^unmark \\d+$");
     }
 
@@ -91,7 +96,8 @@ public class Parser {
      * @return the task number from the unmark command.
      */
     public int getTaskNumberFromValidUnmarkCommand() {
-        return Integer.parseInt(this.userInput.substring(7));
+        int LENGTH_OF_STRING_UNMARK = 6;
+        return Integer.parseInt(this.userInput.substring(LENGTH_OF_STRING_UNMARK + 1));
     }
 
     /**
@@ -109,6 +115,7 @@ public class Parser {
      * @return whether user input is a valid todo command.
      */
     public boolean isValidAddToDoCommand() {
+        assert this.userInput.startsWith("todo") : "userInput should start with todo";
         return this.userInput.matches("^todo .+$");
     }
 
@@ -135,6 +142,7 @@ public class Parser {
      * @return whether user input matches the deadline format.
      */
     public boolean isValidAddDeadlineCommand() {
+        assert this.userInput.startsWith("deadline") : "userInput should start with deadline";
         return this.userInput.matches("^deadline .+ /by .+$");
     }
 
@@ -161,6 +169,7 @@ public class Parser {
      * @return whether user input matches the event format.
      */
     public boolean isValidAddEventCommand() {
+        assert this.userInput.startsWith("event") : "userInput should start with event";
         return this.userInput.matches("^event .+ /from .+ /to .+$");
     }
 
@@ -182,6 +191,7 @@ public class Parser {
     }
 
     public boolean isValidFindCommand() {
+        assert this.userInput.startsWith("find") : "userInput should start with find";
         return this.userInput.matches("^find .+$");
     }
 
