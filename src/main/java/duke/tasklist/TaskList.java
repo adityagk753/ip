@@ -2,6 +2,9 @@ package duke.tasklist;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import duke.exception.CodyException;
 import duke.task.Task;
 
@@ -100,13 +103,8 @@ public class TaskList {
     }
 
     public ArrayList<Task> getTasksMatchingDescription(String searchString) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        for (Task task: this.tasks) {
-            if (task.getDescription().contains(searchString)) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        Stream<Task> tasksStream = this.tasks.stream().filter(task -> task.getDescription().contains(searchString));
+        return new ArrayList<Task>(tasksStream.collect(Collectors.toList()));
     }
 
 }
