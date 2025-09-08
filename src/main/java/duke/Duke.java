@@ -3,6 +3,7 @@ package duke;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import duke.exception.CodyException;
@@ -42,7 +43,8 @@ public class Duke {
 
     /**
      * Returns a welcome message to greet the user.
-     * @return a string of the welcome message 
+     * 
+     * @return a string of the welcome message
      */
     public String getWelcomeMessage() {
         return ui.getWelcomeMessage();
@@ -60,105 +62,177 @@ public class Duke {
         try {
             // delete [taskNumber]
             if (parser.startsWith("delete")) {
-                if (!parser.isValidDeleteCommand()) {
-                    throw new CodyException("Invalid delete task arguments.");
-                }
-                int taskIndex = parser.getTaskNumberFromValidDeleteCommand() - 1;
-                if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                    throw new CodyException("Index of task to be deleted is out of the valid range.");
-                }
-                Task removedTask = tasks.remove(taskIndex);
-                return ui.displaySuccessfulRemovedTaskMessage(removedTask, tasks.size());
+                return handleDeleteCommand(parser);
             }
 
             // mark [taskNumber]
             else if (parser.startsWith("mark")) {
-                if (!parser.isValidMarkCommand()) {
-                    throw new CodyException("Invalid mark task arguments.");
-                }
-                int taskIndex = parser.getTaskNumberFromValidMarkCommand() - 1;
-                if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                    throw new CodyException("Index of task to be marked as done is out of the valid range.");
-                }
-                tasks.markTaskAsDone(taskIndex);
-                return ui.displaySuccessfulMarkTaskAsDoneMessage(tasks.get(taskIndex));
+                return handleMarkCommand(parser);
             }
 
             // unmark [taskNumber]
             else if (parser.startsWith("unmark")) {
-                if (!parser.isValidUnmarkCommand()) {
-                    throw new CodyException("Invalid unmark task arguments.");
-                }
-                int taskIndex = parser.getTaskNumberFromValidUnmarkCommand() - 1;
-                if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                    throw new CodyException("Index of task to be unmarked is out of the valid range.");
-                }
-                tasks.markTaskAsNotDone(taskIndex);
-                return ui.displaySuccessfulUnmarkTaskMessage(tasks.get(taskIndex));
+                return handleUnmarkCommand(parser);
             }
 
             // list
             else if (parser.stringEquals("list")) {
-                return ui.listAllTasks(this.tasks);
+                return handleListCommand(parser);
             }
 
             // add new tasks
             else if (parser.isValidAddTaskCommand()) {
-
-                // todo [description]
-                if (parser.startsWith("todo")) {
-                    if (!parser.isValidAddToDoCommand()) {
-                        throw new CodyException("Invalid todo task arguments.");
-                    }
-                    String description = parser.getDescriptionFromValidAddToDoCommand();
-                    ToDo newToDo = new ToDo(description);
-                    tasks.add(newToDo);
-                }
-
-                // deadline [description] /by [endDate]
-                else if (parser.startsWith("deadline")) {
-                    if (!parser.isValidAddDeadlineCommand()) {
-                        throw new CodyException("Invalid deadline task arguments.");
-                    }
-                    String[] args = parser.getArgsFromValidAddDeadlineCommand();
-                    String description = args[0];
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-                    LocalDate endDate = LocalDate.parse(args[1], formatter);
-                    Deadline deadline = new Deadline(description, endDate);
-                    tasks.add(deadline);
-                }
-
-                // event [description] /from [startDate] /to [endDate]
-                else if (parser.startsWith("event")) {
-                    if (!parser.isValidAddEventCommand()) {
-                        throw new CodyException("Invalid event task arguments.");
-                    }
-                    String[] args = parser.getArgsFromValidAddEventCommand();
-                    String description = args[0];
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-                    LocalDate startDate = LocalDate.parse(args[1], formatter);
-                    LocalDate endDate = LocalDate.parse(args[2], formatter);
-                    if (endDate.isBefore(startDate)) {
-                        throw new CodyException("End date cannot be before start date.");
-                    }
-                    Event event = new Event(description, startDate, endDate);
-                    tasks.add(event);
-                }
-                return ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
-            } else if (parser.startsWith("find")) {
-                if (!parser.isValidFindCommand()) {
-                    throw new CodyException("Invalid find command arguments.");
-                }
-                String searchString = parser.getSearchStringFromValidFindCommand();
-                ArrayList<Task> tasksMatchingDescription = tasks.getTasksMatchingDescription(searchString);
-                return ui.listTasks(tasksMatchingDescription);
-            } else {
-                throw new CodyException("I do not understand the input.");
+                return handleAddTaskCommand(parser);
             }
-        } catch (CodyException e) {
-            return e.getMessage();
-        } catch (IOException e) {
+
+            // find tasks
+            else if (parser.startsWith("find")) {
+                return handleFindCommand(parser);
+            }
+
+            // unknown command
+            else {
+                throw new CodyException("I do not understand the input command.");
+            }
+        } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    /**
+     * Handles the delete command.
+     * @param parser that has been initialised with the user's input.
+     * @return success message in response
+     * @throws CodyException if there is any issue with the user's input
+     * @throws IOException if there is any problem handling the storage file 
+     */
+    public String handleDeleteCommand(Parser parser) throws CodyException, IOException {
+        if (!parser.isValidDeleteCommand()) {
+            throw new CodyException("Invalid delete task arguments.");
+        }
+        int taskIndex = parser.getTaskNumberFromValidDeleteCommand() - 1;
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            throw new CodyException("Index of task to be deleted is out of the valid range.");
+        }
+        Task removedTask = tasks.remove(taskIndex);
+        return ui.displaySuccessfulRemovedTaskMessage(removedTask, tasks.size());
+    }
+
+    /**
+     * Handles the mark command (to mark task as complete).
+     * 
+     * @param parser that has been initialised with the user's input.
+     * @return success message in response
+     * @throws CodyException if there is any issue with the user's input
+     * @throws IOException   if there is any problem handling the storage file
+     */
+    public String handleMarkCommand(Parser parser) throws CodyException, IOException {
+        if (!parser.isValidMarkCommand()) {
+            throw new CodyException("Invalid mark task arguments.");
+        }
+        int taskIndex = parser.getTaskNumberFromValidMarkCommand() - 1;
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            throw new CodyException("Index of task to be marked as done is out of the valid range.");
+        }
+        tasks.markTaskAsDone(taskIndex);
+        return ui.displaySuccessfulMarkTaskAsDoneMessage(tasks.get(taskIndex));
+    }
+
+    /**
+     * Handles the mark command (to mark task as complete).
+     * 
+     * @param parser that has been initialised with the user's input.
+     * @return success message in response
+     * @throws CodyException if there is any issue with the user's input
+     * @throws IOException   if there is any problem handling the storage file
+     */
+    public String handleUnmarkCommand(Parser parser) throws CodyException, IOException {
+        if (!parser.isValidUnmarkCommand()) {
+            throw new CodyException("Invalid unmark task arguments.");
+        }
+        int taskIndex = parser.getTaskNumberFromValidUnmarkCommand() - 1;
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            throw new CodyException("Index of task to be unmarked is out of the valid range.");
+        }
+        tasks.markTaskAsNotDone(taskIndex);
+        return ui.displaySuccessfulUnmarkTaskMessage(tasks.get(taskIndex));
+    }
+
+    /**
+     * Handles the list command (to list all tasks currently).
+     * @param parser that has been initialised with the user's input
+     * @return a list representation of all tasks
+     */
+    public String handleListCommand(Parser parser) {
+        return ui.listAllTasks(this.tasks);
+    }
+
+    /**
+     * Handles an add task command (adding a todo/deadline/event task)
+     * 
+     * @param parser that has been initialised with the user's input
+     * @return a success message once task has been added
+     * @throws CodyException if there is any issue with the user's input
+     * @throws DateTimeParseException if the user input is not in DD MMM YYYY format (eg. input should be like 21 Mar 2025)
+     * @throws IOException   if there is any problem handling the storage file
+     */
+    public String handleAddTaskCommand(Parser parser) throws CodyException, DateTimeParseException, IOException {
+
+        // todo [description]
+        if (parser.startsWith("todo")) {
+            if (!parser.isValidAddToDoCommand()) {
+                throw new CodyException("Invalid todo task arguments.");
+            }
+            String description = parser.getDescriptionFromValidAddToDoCommand();
+            ToDo newToDo = new ToDo(description);
+            tasks.add(newToDo);
+        }
+
+        // deadline [description] /by [endDate]
+        else if (parser.startsWith("deadline")) {
+            if (!parser.isValidAddDeadlineCommand()) {
+                throw new CodyException("Invalid deadline task arguments.");
+            }
+            String[] args = parser.getArgsFromValidAddDeadlineCommand();
+            String description = args[0];
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+            LocalDate endDate = LocalDate.parse(args[1], formatter);
+            Deadline deadline = new Deadline(description, endDate);
+            tasks.add(deadline);
+        }
+
+        // event [description] /from [startDate] /to [endDate]
+        else if (parser.startsWith("event")) {
+            if (!parser.isValidAddEventCommand()) {
+                throw new CodyException("Invalid event task arguments.");
+            }
+            String[] args = parser.getArgsFromValidAddEventCommand();
+            String description = args[0];
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+            LocalDate startDate = LocalDate.parse(args[1], formatter);
+            LocalDate endDate = LocalDate.parse(args[2], formatter);
+            if (endDate.isBefore(startDate)) {
+                throw new CodyException("End date cannot be before start date.");
+            }
+            Event event = new Event(description, startDate, endDate);
+            tasks.add(event);
+        }
+        return ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
+    }
+
+    /**
+     * Handles a find command (find all tasks whose description contains a string)
+     * 
+     * @param parser that has been initialised with the user's input
+     * @return a list representation of relevant tasks
+     * @throws CodyException if there is any issue with user's input
+     */
+    public String handleFindCommand(Parser parser) throws CodyException {
+        if (!parser.isValidFindCommand()) {
+            throw new CodyException("Invalid find command arguments.");
+        }
+        String searchString = parser.getSearchStringFromValidFindCommand();
+        ArrayList<Task> tasksMatchingDescription = tasks.getTasksMatchingDescription(searchString);
+        return ui.listTasks(tasksMatchingDescription);
     }
 }
