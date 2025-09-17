@@ -66,7 +66,7 @@ You can mark a task as done.
 
 Example: `mark 1`
 
-Expacted output:
+Expected output:
 ```
 Nice! I've marked this task as done:
 [T][X} complete homework
@@ -77,7 +77,7 @@ You can also unmark a task (marking it as not done).
 
 Example: `unmark 1`
 
-Expacted output:
+Expected output:
 ```
 OK, I've marked this task as not done yet:
 [T][] complete homework
