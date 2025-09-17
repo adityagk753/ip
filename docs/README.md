@@ -1,6 +1,6 @@
 # Cody User Guide
 
-docs/Ui.png
+![Image](docs/Ui.png)
 
 ## Tasks
 You can use Cody to keep track of your tasks. Each task can be marked as done, or unmarked (that is, marked as not done).
