@@ -1,12 +1,12 @@
-package duke.tasklist;
+package cody.tasklist;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import duke.exception.CodyException;
-import duke.task.Task;
+import cody.exception.CodyException;
+import cody.task.Task;
 
 /**
  * Represents a list of {@link Task} objects.

@@ -1,4 +1,4 @@
-package duke;
+package cody;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -6,29 +6,29 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
-import duke.exception.CodyException;
-import duke.parser.Parser;
-import duke.task.Deadline;
-import duke.task.Event;
-import duke.task.Task;
-import duke.task.ToDo;
-import duke.tasklist.TaskList;
+import cody.exception.CodyException;
+import cody.parser.Parser;
+import cody.task.Deadline;
+import cody.task.Event;
+import cody.task.Task;
+import cody.task.ToDo;
+import cody.tasklist.TaskList;
 
 /**
- * Represents the Duke chatbot application.
- * Duke manages a task list that supports adding, deleting, marking,
+ * Represents the Cody chatbot application.
+ * Cody manages a task list that supports adding, deleting, marking,
  * unmarking, and listing tasks. Tasks are persisted in storage.
  */
-public class Duke {
+public class Cody {
 
-    /** The list of tasks being managed by Duke. */
+    /** The list of tasks being managed by Cody. */
     TaskList tasks;
 
     /** Handles all interactions with the user. */
     Ui ui;
 
     /**
-     * Constructs a Duke chatbot instance.
+     * Constructs a Cody chatbot instance.
      * Initializes the task list and storage, and prepares the UI.
      *
      * @throws IOException   if there is an issue with accessing or creating the
@@ -36,7 +36,7 @@ public class Duke {
      * @throws CodyException if there is an error while initializing tasks from
      *                       storage
      */
-    public Duke() throws IOException, CodyException {
+    public Cody() throws IOException, CodyException {
         this.tasks = new TaskList("data", "data/tasks.txt");
         this.ui = new Ui();
     }

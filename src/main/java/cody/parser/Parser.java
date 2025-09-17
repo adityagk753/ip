@@ -1,8 +1,9 @@
-package duke.parser;
+package cody.parser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import duke.exception.CodyException;
+
+import cody.exception.CodyException;
 
 /**
  * Contains useful functions for parsing the different possible user commands.

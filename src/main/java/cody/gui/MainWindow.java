@@ -1,6 +1,6 @@
-package duke.gui;
+package cody.gui;
 
-import duke.Duke;
+import cody.Cody;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,37 +23,37 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
-    private Duke duke;
+    private Cody cody;
 
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/UserImage.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DukeImage.png"));
+    private Image codyImage = new Image(this.getClass().getResourceAsStream("/images/CodyImage.png"));
 
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Duke instance */
-    public void setDuke(Duke d) {
-        duke = d;
+    /** Injects the Cody instance */
+    public void setCody(Cody c) {
+        cody = c;
     }
 
     public void setWelcomeMessage() {
-        dialogContainer.getChildren().add(DialogBox.getDukeDialog(duke.getWelcomeMessage(), dukeImage));
+        dialogContainer.getChildren().add(DialogBox.getCodyDialog(cody.getWelcomeMessage(), codyImage));
     }
 
     /**
      * Creates two dialog boxes, one echoing user input and the other containing
-     * Duke's reply and then appends them to
+     * Cody's reply and then appends them to
      * the dialog container. Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = duke.handleCommand(input);
+        String response = cody.handleCommand(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage));
+                DialogBox.getCodyDialog(response, codyImage));
         userInput.clear();
         if (input.equals("bye")) {
             Platform.exit();

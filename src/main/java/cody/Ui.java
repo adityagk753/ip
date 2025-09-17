@@ -1,13 +1,12 @@
-package duke;
-
-import duke.tasklist.TaskList;
+package cody;
 
 import java.util.ArrayList;
 
-import duke.task.Task;
+import cody.task.Task;
+import cody.tasklist.TaskList;
 
 /**
- * Handles all user interactions for the Duke chatbot.
+ * Handles all user interactions for the Cody chatbot.
  * 
  * <p>Responsible for printing messages to the console, including
  * welcome/goodbye messages, task updates, and listing tasks.</p>

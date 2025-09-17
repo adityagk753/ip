@@ -1,4 +1,4 @@
-package duke.exception;
+package cody.exception;
 
 /**
  * Represents an exception that is thrown in relation to the Cody chatbot.

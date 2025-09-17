@@ -1,6 +1,6 @@
-package duke.task;
+package cody.task;
 
-import duke.exception.CodyException;
+import cody.exception.CodyException;
 
 /**
  * Represents a general task. 

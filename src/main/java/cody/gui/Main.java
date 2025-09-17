@@ -1,8 +1,8 @@
-package duke.gui;
+package cody.gui;
 
 import java.io.IOException;
 
-import duke.Duke;
+import cody.Cody;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,16 +10,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * A GUI for Duke using FXML.
+ * A GUI for Cody using FXML.
  */
 public class Main extends Application {
 
-    private Duke duke;
+    private Cody cody;
 
     @Override
     public void start(Stage stage) {
         try {
-            duke = new Duke();
+            cody = new Cody();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -28,7 +28,7 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setDuke(duke); // inject the Duke instance
+            fxmlLoader.<MainWindow>getController().setCody(cody); // inject the Cody instance
             fxmlLoader.<MainWindow>getController().setWelcomeMessage();
             stage.show();
         } catch (IOException e) {

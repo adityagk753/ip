@@ -1,9 +1,9 @@
-package duke.task;
+package cody.task;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import duke.exception.CodyException;
+import cody.exception.CodyException;
 
 /**
  * Represents a todo task. 

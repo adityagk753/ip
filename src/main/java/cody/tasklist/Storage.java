@@ -1,4 +1,4 @@
-package duke.tasklist;
+package cody.tasklist;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,8 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import duke.exception.CodyException;
-import duke.task.Task;
+
+import cody.exception.CodyException;
+import cody.task.Task;
 
 /**
  * Deals with all interactions involving the file where task data is stored.
