@@ -61,6 +61,28 @@ Expected output:
 3. [E][] attend hackathon (from: 2025-08-15 to: 2025-08-17)
 ```
 
+## Marking tasks
+You can mark a task as done.
+
+Example: `mark 1`
+
+Expacted output:
+```
+Nice! I've marked this task as done:
+[T][X} complete homework
+```
+
+## Unmarking tasks
+You can also unmark a task (marking it as not done).
+
+Example: `unmark 1`
+
+Expacted output:
+```
+OK, I've marked this task as not done yet:
+[T][] complete homework
+```
+
 ## Deleting tasks
 You can also delete a task.
 
