@@ -106,6 +106,11 @@ Here are the matching tasks in your list.
 1. [D][] complete homework (by: 2025-08-15)
 ```
 
+## Exiting
+You can exit the chatbot by either clicking on the cross on the top right corner of the GUI, or through the `bye` command.
+
+Example: `bye`
+
 ## Detection of duplicate tasks
 Say you don't remember that you've already added a task to Cody. When you try to insert the same task again, if there exists a not-completed task with the same details in Cody's memory, this task will not be added to the list!
 
