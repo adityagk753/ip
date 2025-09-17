@@ -10,7 +10,8 @@ import cody.exception.CodyException;
  */
 public class Parser {
 
-    String userInput;
+    // used AI's suggestion to make this private
+    private String userInput;
 
     /**
      * Constructs a Parser with the specified user input.
@@ -107,7 +108,7 @@ public class Parser {
      * @return whether user input starts with {@code todo}, {@code deadline}, or {@code event}.
      */
     public boolean isValidAddTaskCommand() {
-        return this.userInput.matches("^(todo|deadline|event).*$");
+        return this.userInput.matches("^(todo|deadline|event)");
     }
 
     /**

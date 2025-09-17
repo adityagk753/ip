@@ -21,11 +21,16 @@ import cody.tasklist.TaskList;
  */
 public class Cody {
 
-    /** The list of tasks being managed by Cody. */
-    TaskList tasks;
+    /**
+     * The list of tasks being managed by Cody.
+     * Used AI's suggestion to make this private.
+     */
+    private TaskList tasks;
 
-    /** Handles all interactions with the user. */
-    Ui ui;
+    /** Handles all interactions with the user. 
+     * Used AI's suggestion to make this private.
+    */
+    private Ui ui;
 
     /**
      * Constructs a Cody chatbot instance.
@@ -139,7 +144,7 @@ public class Cody {
     }
 
     /**
-     * Handles the mark command (to mark task as complete).
+     * Handles the unmark command (to unmark a task from being completed).
      * 
      * @param parser that has been initialised with the user's input.
      * @return success message in response
@@ -217,6 +222,8 @@ public class Cody {
             Event event = new Event(description, startDate, endDate);
             tasks.add(event);
         }
+        // Used AI suggestion: inserted an assertion here to check that a task has been added
+        assert tasks.size() > 0 : "There should be at least one task after adding a new task";
         return ui.displaySuccessfulAddTaskMessage(tasks.size(), tasks.get(tasks.size() - 1));
     }
 
