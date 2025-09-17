@@ -108,7 +108,7 @@ public class Parser {
      * @return whether user input starts with {@code todo}, {@code deadline}, or {@code event}.
      */
     public boolean isValidAddTaskCommand() {
-        return this.userInput.matches("^(todo|deadline|event)");
+        return this.userInput.matches("^(todo|deadline|event).*$");
     }
 
     /**
