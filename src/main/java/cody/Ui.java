@@ -75,7 +75,7 @@ public class Ui {
      * @param task       the task that was added
      */
     public String displaySuccessfulAddTaskMessage(Integer numOfTasks, Task task) {
-        return String.format("Got it. I've added this task: \n%s\nNow you have %d tasks(s) in the list", task, numOfTasks);
+        return String.format("Got it. I've added this task: \n%s\nNow you have %d task(s) in the list", task, numOfTasks);
     }
 
     /**
