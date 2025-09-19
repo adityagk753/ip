@@ -48,7 +48,7 @@ public class Task {
         } else if (string.startsWith("[E]")) {
             return Event.convertStringToTask(string);
         } else {
-            throw new CodyException("Unknown task type being read from file.");
+            throw new CodyException("Unknown task type being read from file. I'm trying to read this line: " + string);
         }
     }
 
