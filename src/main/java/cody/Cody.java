@@ -65,38 +65,26 @@ public class Cody {
         Parser parser = new Parser(userInput);
 
         try {
-            // delete [taskNumber]
             if (parser.startsWith("delete")) {
+                // delete [taskNumber]
                 return handleDeleteCommand(parser);
-            }
-
-            // mark [taskNumber]
-            else if (parser.startsWith("mark")) {
+            } else if (parser.startsWith("mark")) {
+                // mark [taskNumber]
                 return handleMarkCommand(parser);
-            }
-
-            // unmark [taskNumber]
-            else if (parser.startsWith("unmark")) {
+            } else if (parser.startsWith("unmark")) {
+                // unmark [taskNumber]
                 return handleUnmarkCommand(parser);
-            }
-
-            // list
-            else if (parser.stringEquals("list")) {
+            } else if (parser.stringEquals("list")) {
+                // list
                 return handleListCommand(parser);
-            }
-
-            // add new tasks
-            else if (parser.isValidAddTaskCommand()) {
+            } else if (parser.isValidAddTaskCommand()) {
+                // add new tasks
                 return handleAddTaskCommand(parser);
-            }
-
-            // find tasks
-            else if (parser.startsWith("find")) {
+            } else if (parser.startsWith("find")) {
+                // find tasks
                 return handleFindCommand(parser);
-            }
-
-            // unknown command
-            else {
+            } else {
+                // unknown command
                 throw new CodyException("I do not understand the input command.");
             }
         } catch (Exception e) {
