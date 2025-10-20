@@ -69,7 +69,7 @@ Example: `mark 1`
 Expected output:
 ```
 Nice! I've marked this task as done:
-[T][X} complete homework
+[T][X] complete homework
 ```
 
 ## Unmarking tasks
